@@ -96,12 +96,20 @@ resource "aws_instance" "controller" {
 	}
 }
 
+module "exit-nodes" {
+	source = "./nodes/aws"
+	subnet-id = aws_instance.controller.subnet_id
+	vpc_id = aws_security_group.allow_tls_ssh.vpc_id
+	mainKey = tls_private_key.ssh.private_key_pem
+
+}
+
 output "controller-ip" {
 	value = aws_instance.controller.public_ip
 	description = "Controller Public IP"
 }
 
-output "subnet-id" {
+output "subnet_id" {
 	value = aws_instance.controller.subnet_id
 	description = "Subnet Id"
 }
