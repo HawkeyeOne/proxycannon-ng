@@ -78,6 +78,20 @@ resource "aws_instance" "controller" {
 	tags = {
 		Name = "Controller"
 	}
+
+	connection {
+		type = "ssh"
+		user = "ubuntu"
+		private_key = tls_private_key.ssh.private_key_pem
+		host = aws_instance.controller.public_ip
+	}
+	provisioner "remote-exec" {
+		inline = [
+			"git clone https://github.com/proxycannon/proxycannon-ng",
+			"cd proxycannon-ng/setup/",
+			"sudo ./install.sh"
+		]
+	}
 }
 
 output "controller-ip" {
