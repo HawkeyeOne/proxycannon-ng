@@ -88,8 +88,10 @@ resource "aws_instance" "controller" {
 	provisioner "remote-exec" {
 		inline = [
 			"git clone https://github.com/proxycannon/proxycannon-ng",
-			"cd proxycannon-ng/setup/",
-			"sudo ./install.sh"
+#			"cd proxycannon-ng/setup/"
+#			"sudo ./install.sh"
+#			"cd ../..",
+#			"cd nodes/aws/"
 		]
 	}
 }
@@ -97,4 +99,9 @@ resource "aws_instance" "controller" {
 output "controller-ip" {
 	value = aws_instance.controller.public_ip
 	description = "Controller Public IP"
+}
+
+output "subnet-id" {
+	value = aws_instance.controller.subnet_id
+	description = "Subnet Id"
 }
