@@ -88,10 +88,10 @@ resource "aws_instance" "controller" {
 	provisioner "remote-exec" {
 		inline = [
 			"git clone https://github.com/proxycannon/proxycannon-ng",
-#			"cd proxycannon-ng/setup/"
-#			"sudo ./install.sh"
-#			"cd ../..",
-#			"cd nodes/aws/"
+			"cd proxycannon-ng/setup/",
+			"sudo ./install.sh",
+                        "cd ~",
+                        "mkdir proxycannon-vpn-client",
 		]
 	}
 }
@@ -101,6 +101,7 @@ module "exit-nodes" {
 	subnet-id = aws_instance.controller.subnet_id
 	vpc_id = aws_security_group.allow_tls_ssh.vpc_id
 	mainKey = tls_private_key.ssh.private_key_pem
+	controller_ip = aws_instance.controller.public_ip
 
 }
 

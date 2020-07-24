@@ -15,3 +15,4 @@ variable "subnet-id" {
 }
 
 variable "vpc_id" {}
+variable "controller_ip" {}

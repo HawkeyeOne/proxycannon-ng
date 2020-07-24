@@ -14,9 +14,9 @@ resource "aws_instance" "exit-node" {
   count		= var.countOf
 
 
-  #tags {
-  #  Name = "exit-node"
-  #}
+  tags = {
+    Name = "exit-node"
+  }
 
   # upload our provisioning scripts
   provisioner "file" {
@@ -48,14 +48,39 @@ resource "aws_instance" "exit-node" {
   }
 
   # modify our route table when we bring up an exit-node
-  provisioner "local-exec" {
-    command = "sudo ./add_route.bash ${self.private_ip}"
+  provisioner "remote-exec" {
+    #command = "sudo ./add_route.bash ${self.private_ip}"
+    inline = [ 
+	"cd proxycannon-ng/nodes/aws/",
+        "sudo ./add_route.bash ${self.private_ip}"
+    ]
+
+
+    connection {
+      type = "ssh"
+      user = "ubuntu" 
+      private_key = var.mainKey
+      host = var.controller_ip
+
+    }
   }
 
   # modify our route table when we destroy an exit-node
-  provisioner "local-exec" {
+  provisioner "remote-exec" {
     when = destroy
-    command = "sudo ./del_route.bash ${self.private_ip}"
+    #command = "sudo ./del_route.bash ${self.private_ip}"
+    inline = [
+	"cd proxycannon-ng/nodes/aws/",
+        "sudo ./del_route.bash ${self.private_ip}"
+    ]
+
+    connection {
+      type = "ssh"
+      user = "ubuntu" 
+      private_key = var.mainKey
+      host = var.controller_ip
+
+    }
   }
 
 }
